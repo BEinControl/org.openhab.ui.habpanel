@@ -65,75 +65,13 @@
                     value = parseFloat(state);
                 }
             } else {
-                value = 0;
+                return undefined;
             }
 
             return value.toFixed(((+vm.widget.step).toFixed(2)).replace(/^-?\d*\.?|0+$/g, '').length);
         }
 
-        function doChange_() {
-            OHService.sendCmd(vm.widget.item, vm.value.toString());
-        }
-
-
-
-
-        // as long as it continues to be invoked, it will not be triggered
-        // function debounce (func, interval) {
-        //   var timeout;
-        //   return function () {
-        //     var context = this;
-        //     var later = function () {
-        //       timeout = null;
-        //       func.apply(context);
-        //     };
-        //     clearTimeout(timeout);
-        //     timeout = setTimeout(later, interval || 200);
-        //   }
-        // }
-
-        // function throttle (func, interval) {
-        //   var timeout;
-        //   return function() {
-        //     var context = this;
-        //     var later = function () {
-        //       timeout = false;
-        //     };
-        //     if (!timeout) {
-        //       func.apply(context)
-        //       timeout = true;
-        //       setTimeout(later, interval)
-        //     }
-        //   }
-        // }
-
-        function throttle () {
-            var timeout;
-            var bSendCmd;
-            return function() {
-                var later = function () {
-                    timeout = false;
-                    if (bSendCmd) {
-                        OHService.sendCmd(vm.widget.item, vm.value.toString());
-                        bSendCmd = false;
-                    }
-                };
-
-                if (!timeout) {
-                    OHService.sendCmd(vm.widget.item, vm.value.toString());
-                    timeout = true;
-                    setTimeout(later, 200);
-                } else {
-                    bSendCmd = true;
-                }
-            }
-        }
-
-        // var debounceChange = debounce(doChange_, 100)
-        var throttledChange = throttle()
-
         vm.slider = {
-            inChange: false,
             options: {
                 id: 'slider-' + vm.widget.item,
                 floor: (vm.widget.floor) ? vm.widget.floor : 0,
@@ -151,24 +89,12 @@
                 enforceStep: false,
                 readOnly: (vm.widget.readonly) ? vm.widget.readonly : false,
                 disabled: (vm.widget.disabled) ? vm.widget.disabled : false,
-                interval: 0,
                 translate: function (value) {
                     return (vm.widget.unit) ? value + vm.widget.unit : value;
                 },
-                onStart: function(id) {
-                    vm.slider.inChange = true;
-                },
-                onChange: function (id) {
-                    vm.value = vm.slider.value;
-
-                    // debounceChange();
-                    throttledChange();
-//                    OHService.sendCmd(vm.widget.item, vm.value.toString());
-                },
                 onEnd: function (id) {
-                    vm.slider.inChange = false;
-                    // vm.value = vm.slider.value;
-                    // OHService.sendCmd(vm.widget.item, vm.value.toString());
+                    vm.value = vm.slider.value;
+                    OHService.sendCmd(vm.widget.item, vm.value.toString());
                 }
             }
         };
@@ -183,8 +109,7 @@
         }
 
         OHService.onUpdate($scope, vm.widget.item, function () {
-            if (!vm.slider.inChange)
-                updateValue();
+            updateValue();
         });
 
     }

@@ -19,7 +19,7 @@
     .directive('itemTypeIcon', ItemTypeIcon)
     .directive('itemPicker', ItemPicker)
     .filter('themeValue', ThemeValueFilter)
-    
+
 
     WidgetsService.$inject = ['WidgetTypes'];
     function WidgetsService(widgetTypes) {
@@ -32,7 +32,7 @@
         return service;
 
         ////////////////
-        
+
         function registerType(widget) {
             widgetTypes.push(widget);
             console.log("Registered widget type: " + widget.type);
@@ -68,7 +68,7 @@
         var directive = {
             link: link,
             restrict: 'AE',
-            template: 
+            template:
                 '<div class="icon" ng-class="{backdrop: backdrop, center: center, inline: inline}">' +
                 '<img ng-if="backdrop" height="100%" ng-class="{ colorize: colorize }" class="icon-tile-backdrop" ng-src="{{iconUrl}}" />' +
                 '<img ng-if="!backdrop" ng-style="{ width: size + \'px\' }" ng-class="{ colorize: colorize, off: state==\'OFF\' }" class="icon-tile" ng-src="{{iconUrl}}" />' +
@@ -84,7 +84,7 @@
             }
         };
         return directive;
-        
+
         function link(scope, element, attrs) {
             if (!scope.size) scope.size = 32;
             scope.colorize = IconService.getIconSet(scope.iconset).colorize;

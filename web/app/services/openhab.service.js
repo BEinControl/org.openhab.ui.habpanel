@@ -52,7 +52,7 @@
         }
 
         function getItem(name) {
-            var item = $filter('filter')($rootScope.items, {name: name}, true); 
+            var item = $filter('filter')($rootScope.items, {name: name}, true);
             return (item) ? item[0] : null;
         }
 
@@ -71,13 +71,13 @@
                 url    : '/rest/items/' + item,
                 data   : cmd,
                 headers: { 'Content-Type': 'text/plain' }
-            }).then(function (data) {
-                console.log('Command sent: ' + item + '=' + cmd);
+            }); //.then(function (data) {
+                //console.log('Command sent: ' + item + '=' + cmd);
 
                 // should be handled by server push messages but their delivery is erratic
                 // so perform a full refresh every time a command is sent
                 //loadItems();
-            });
+            // });
         }
 
         /**
@@ -157,7 +157,7 @@
         function reloadItems() {
             loadItems();
         }
-        
+
         function registerEventSource() {
             if (typeof(EventSource) !== "undefined") {
                 var source = new EventSource('/rest/events');
@@ -347,7 +347,7 @@
         function saveCurrentPanelConfig() {
             var deferred = $q.defer();
 
-            var lastUpdatedTime = $rootScope.panelsRegistry[getCurrentPanelConfig()].updatedTime; 
+            var lastUpdatedTime = $rootScope.panelsRegistry[getCurrentPanelConfig()].updatedTime;
 
             // fetch the current configuration again (to perform optimistic concurrency on the current panel config only)
             tryGetServiceConfiguration().then(function () {
